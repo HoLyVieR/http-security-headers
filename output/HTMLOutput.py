@@ -26,7 +26,7 @@ TEMPLATE_HTML = """
 				<div class="panel-heading" role="tab">
 					<!-- TITLE -->
 					<h4>
-						<a role="button" data-toggle="collapse" aria-expanded="true" data-parent="#accordion" href="#collapseRawHeader">Raw headers</a>
+						<a role="button" data-toggle="collapse" aria-expanded="true" aria-controls="collapseRawHeader" href="#collapseRawHeader">Raw headers</a>
 					</h4>
 					<!-- /TITLE -->
 				</div>
@@ -51,7 +51,7 @@ TEMPLATE_HTML = """
 				<div class="panel-heading" role="tab">
 					<!-- TITLE -->
 					<h4>
-						<a role="button" data-toggle="collapse" aria-expanded="true" data-parent="#accordion" href="#collapseParsedHeader">Parsed headers</a>
+						<a role="button" data-toggle="collapse" aria-expanded="true" aria-controls="collapseParsedHeader" href="#collapseParsedHeader">Parsed headers</a>
 					</h4>
 					<!-- /TITLE -->
 				</div>
@@ -104,7 +104,7 @@ TEMPLATE_HTML = """
 				<div class="panel-heading" role="tab">
 					<!-- TITLE -->
 					<h4>
-						<a role="button" data-toggle="collapse" aria-expanded="true" data-parent="#accordion" href="#collapseAnalysis">Analysis</a>
+						<a role="button" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAnalysis" href="#collapseAnalysis">Analysis</a>
 					</h4>
 					<!-- /TITLE -->
 				</div>
