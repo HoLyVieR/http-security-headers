@@ -20,7 +20,7 @@ TEMPLATE_HTML = """
 	<div class="container">
 		<h1>{{ title }}</h1>
 
-		<div class="panel-group" id="accordion" role="tablist">
+		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			<!-- RAW HEADERS -->
 			<div class="panel panel-default">
 				<div class="panel-heading" role="tab">
