@@ -233,7 +233,10 @@ class HTMLOutput:
 			"data:" : "<span style='color: #FFA500'>Data URIs</span>",
 			"mediastream:" : "Mediastream URIs",
 			"blob:" : "Blob URIs",
-			"filesystem:" : "Filesystem URIs"
+			"filesystem:" : "Filesystem URIs",
+			"http:" : "<span style='color: #FFA500'>Any domain with the protocol http</span>",
+			"https:" : "<span style='color: #FFA500'>Any domain with the protocol https</span>",
+			"wss:" : "<span style='color: #FFA500'>Any domain with the protocol wss</span>"
 		}
 
 		if value in magic_value:
