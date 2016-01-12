@@ -36,8 +36,8 @@ TEMPLATE_HTML = """
 					<table class="table">
 						{% for header in headers | sort(attribute=0) %}
 						<tr>
-							<td style="width: 250px" class="active"><b>{{ header[0] }}</b></td>
-							<td>{{ header[1] }}</td>
+							<td style="width: 250px" class="active"><b>{{ header[0] | e }}</b></td>
+							<td>{{ header[1] | e }}</td>
 						</tr>
 						{% endfor %}
 					</table>
@@ -65,8 +65,19 @@ TEMPLATE_HTML = """
 							<td>
 								<ul>
 									{% for item in parsed[header] | sort %}
-										{% if not item in ["warning", "info", "policy"] and not parsed[header][item] == None %}
-											<li><b>{{ item | capitalize }}</b> : {{ parsed[header][item] }}</li>
+										{% if not item in ["warning", "info", "policy", "pin-sha256"] and not parsed[header][item] == None %}
+											<li><b>{{ item | capitalize | e }}</b> : {{ parsed[header][item] | e }}</li>
+										{% endif %}
+
+										{% if item == "pin-sha256" and not parsed[header][item] == None %}
+											<li>
+												<b>Pin-sha256</b> : <br />
+												<ul>
+													{% for pin in parsed[header]["pin-sha256"] %}
+														<li>{{ pin }}</li>
+													{% endfor %}
+												</ul>
+											</li>
 										{% endif %}
 
 										{% if item == "policy" %}
@@ -76,7 +87,7 @@ TEMPLATE_HTML = """
 													{% for policy_name in parsed[header]["policy"] | sort %}
 														{% if  parsed[header]["policy"][policy_name] %}
 														<li>
-															<b>{{ filters["csp_name"](policy_name) }}</b><br />
+															<b>{{ filters["csp_name"](policy_name) | e }}</b><br />
 															<ul>
 																{% for policy_value in parsed[header]["policy"][policy_name] %}
 																	<li>{{ filters["csp_value"](policy_value) }}</li>
@@ -163,14 +174,14 @@ class HTMLOutput:
 		# Source : https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives
 		human_text = { 
 			"base-uri" : "URIs that a user agent may use as the document base URL are limited to",
-			"child-src" : "Valid sources for web workers and nested browsing contexts loaded using elements such as &lt;frame&gt; and &lt;iframe&gt; are limited to",
+			"child-src" : "Valid sources for web workers and nested browsing contexts loaded using elements such as <frame> and <iframe> are limited to",
 			"connect-src" : "Valid sources for fetch, XMLHttpRequest, WebSocket, and EventSource connections are limited to",
 			"font-src" : "Valid sources for fonts loaded using @font-face are limited to",
-			"frame-src" : "Valid sources for web workers and nested browsing contexts loading using elements such as &lt;frame&gt; and &lt;iframe&gt; are limited to",
+			"frame-src" : "Valid sources for web workers and nested browsing contexts loading using elements such as <frame> and <iframe> are limited to",
 			"img-src" : "Valid sources of images and favicons are limited to",
 			"manifest-src" : "Which manifest can be applied to the resource is limited to ",
-			"media-src" : "Valid sources for loading media using the &lt;audio&gt; and &lt;video&gt; elements are limited to",
-			"object-src" : "Valid sources for the &lt;object&gt;, &lt;embed&gt;, arend &lt;applet&gt; elements are limited to",
+			"media-src" : "Valid sources for loading media using the <audio> and <video> elements are limited to",
+			"object-src" : "Valid sources for the <object>, <embed>, arend <applet> elements are limited to",
 			"plugin-types" : "Valid plugins that the user agent may invoke are limited to",
 			"referrer" : "Information in the referer (sic) header for links away from a page is limited to",
 			"reflected-xss" : "Instruction to the user agent to activate or deactivate any heuristics used to filter or block reflected cross-site scripting attacks is set to",
@@ -184,12 +195,12 @@ class HTMLOutput:
 
 	def _csp_value(self, value):
 		magic_value = {
-			"*" : "All domain",
+			"*" : "<span style='color: #FFA500'>All domain</span>",
 			"'none'" : "No URLs will match",
 			"'self'" : "Origin of the page",
-			"'unsafe-inline'" : "Inline resources",
-			"'unsafe-eval'" : "eval() and similar methods for creating code from strings",
-			"data:" : "Data URIs",
+			"'unsafe-inline'" : "<span style='color: #FFA500'>Inline resources</span>",
+			"'unsafe-eval'" : "<span style='color: #FFA500'>eval() and similar methods for creating code from strings</span>",
+			"data:" : "<span style='color: #FFA500'>Data URIs</span>",
 			"mediastream:" : "Mediastream URIs",
 			"blob:" : "Blob URIs",
 			"filesystem:" : "Filesystem URIs"
@@ -205,7 +216,7 @@ class HTMLOutput:
 		protocol_match = re.search("^([a-z\\-]+)\\:\\/\\/", value)
 
 		if protocol_match:
-			suffix2 = "using the protcol '%s' " % protocol_match.group(1)
+			suffix2 = " using the protcol '%s' " % protocol_match.group(1)
 			value = value[len(protocol_match.group(0)):]
 
 		if value[:2] == "*.":

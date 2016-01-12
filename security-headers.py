@@ -104,9 +104,9 @@ def get_analysis(headers, content):
 if __name__ == "__main__":
 	arg_parser = argparse.ArgumentParser()
 	arg_parser.add_argument("url", help="URL to test")
-	arg_parser.add_argument("--output_type", help="The format for which you want the report to be. Possible value are : txt and html.")
+	arg_parser.add_argument("--output_type", help="The format for which you want the report to be. Possible value are : html.", default="html")
 	arg_parser.add_argument("--output_file", help="File to output the report. When this option is not specified, stdout is used.")
-	arg_parser.add_argument("--include_empty_section", help="If the empty section of the report should be included.")
+	arg_parser.add_argument("--include_empty_section", help="If the empty section of the report should be included.", default=False, action='store_const', const=True)
 	args = arg_parser.parse_args()
 
 	if args.output_type and args.output_type.lower() == "html":

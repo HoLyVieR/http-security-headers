@@ -58,12 +58,13 @@ class PublicKeyPinsParser:
 				includeSubDomains = True
 
 			if key == "pin-sha256":
-				pin_sha256 = value
+				if pin_sha256 is None:
+					pin_sha256 = []
 
-				if pin_sha256[0] == "\"":
-					pin_sha256 = pin_sha256[1:-1]
+				if value[0] == "\"":
+					value = value[1:-1]
 
-				pin_sha256 = base64.b64decode(pin_sha256).encode("hex")
+				pin_sha256.append(base64.b64decode(value).encode("hex"))
 
 			if key == "report-uri":
 				report_uri = value

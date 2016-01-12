@@ -55,12 +55,6 @@ class ContentSecurityPolicyAnalyzer:
 				"message" : "Allowing CSS and Font from any domain can lead to data leakage. See http://mksben.l0.cm/2015/10/css-based-attack-abusing-unicode-range.html"
 			},
 			{
-				"style-src" : ["'unsafe-inline'"],
-				"font-src" : ["*"],
-				"type" : "info",
-				"message" : "Allowing inline CSS and Font from any domain can lead to data leakage. See http://mksben.l0.cm/2015/10/css-based-attack-abusing-unicode-range.html"
-			},
-			{
 				"style-src" : ["data:"],
 				"font-src" : ["*"],
 				"type" : "info",
