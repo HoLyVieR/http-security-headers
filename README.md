@@ -1,10 +1,20 @@
 # HTTP Security Headers
 
-Command line utilities that helps you analyze the security header of a website. It also display header like "Content-Security-Policy" in a human readable way.
+Command line utilities that helps you analyze the security header of a website. It provides the following features :
+
+ - Display the raw header
+ - Display a parsed view for the security headers
+   - Content-Security-Policy
+   - Public-Key-Pins
+   - Strict-Transport-Security
+   - X-Content-Type-Options
+   - X-Frame-Options
+   - X-XSS-Protection
+ - Analyze the value of the headers and display error, warning and notable information about those value.
 
 # How to use
 
-    python security-headers.py https://www.facebook.com --output_type html --output_file facebook.html
+    python security-headers.py https://www.facebook.com --output_file facebook.html
     
     
 # Help
