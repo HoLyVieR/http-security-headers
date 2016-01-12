@@ -45,8 +45,10 @@ class ContentSecurityPolicyParser:
 				if not "report-uri" in header[1]:
 					analysis["warning"].append("Content Security Policy is set to report only, but no 'report-uri' is defined.")
 
-				self._parse_policy(header[1], analysis["policy"], analysis["info"])
-				analysis["status"] = "CONTENT_SECURITY_POLICY_REPORT_ONLY"
+				if not found:	
+					analysis["status"] = "CONTENT_SECURITY_POLICY_REPORT_ONLY"
+					self._parse_policy(header[1], analysis["policy"], analysis["info"])
+
 				found_report = True
 
 		if not found and not found_report:
@@ -60,11 +62,14 @@ class ContentSecurityPolicyParser:
 	def _parse_policy(self, value, policy, info):
 		components = value.split(";")
 
+		for key in policy:
+			policy[key] = None
+
 		for component in components:
 			if component.strip() == "":
 				continue
 				
-			parts = component.split(" ")
+			parts = component.strip().split(" ")
 			directive_name = parts[0]
 			attributes = parts[1:]
 

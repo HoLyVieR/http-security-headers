@@ -29,7 +29,7 @@ class PublicKeyPinsAnalyzer:
 			# 15 minutes threadshold
 			if results["max-age"] < 15 * 60:
 				parts.append({
-					"type" : "info",
+					"type" : "warning",
 					"message" : "Public-Key-Pins is activated, but it has a really short max-age value. Having short max-age value can nullify the effect of the header if the information is expired every time the user visits the website."
 				})
 

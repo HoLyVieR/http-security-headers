@@ -65,8 +65,12 @@ TEMPLATE_HTML = """
 							<td>
 								<ul>
 									{% for item in parsed[header] | sort %}
-										{% if not item in ["warning", "info", "policy", "pin-sha256"] and not parsed[header][item] == None %}
+										{% if not item in ["warning", "info", "policy", "pin-sha256", "max-age"] and not parsed[header][item] == None %}
 											<li><b>{{ item | capitalize | e }}</b> : {{ parsed[header][item] | e }}</li>
+										{% endif %}
+
+										{% if item == "max-age" and not parsed[header][item] == None %}
+											<li><b>Max-age</b> : {{ filters["human_time"](parsed[header][item]) | e }}</li>
 										{% endif %}
 
 										{% if item == "pin-sha256" and not parsed[header][item] == None %}
@@ -89,9 +93,13 @@ TEMPLATE_HTML = """
 														<li>
 															<b>{{ filters["csp_name"](policy_name) | e }}</b><br />
 															<ul>
-																{% for policy_value in parsed[header]["policy"][policy_name] %}
-																	<li>{{ filters["csp_value"](policy_value) }}</li>
-																{% endfor %}
+																{% if not parsed[header]["policy"][policy_name] is string %}
+																	{% for policy_value in parsed[header]["policy"][policy_name] %}
+																		<li>{{ filters["csp_value"](policy_value) }}</li>
+																	{% endfor %}
+																{% else %}
+																	<li>{{ parsed[header]["policy"][policy_name] }}</li>
+																{% endif %}
 															</ul><br />
 														</li>
 														{% endif %}
@@ -165,8 +173,30 @@ class HTMLOutput:
 			"report"     : report,
 			"parsed"     : parsed_results,
 			"headers"    : headers,
-			"filters"    : {  "csp_name" : self._csp_name, "csp_value" : self._csp_value } 
+			"filters"    : {  "csp_name" : self._csp_name, "csp_value" : self._csp_value, "human_time" : self._human_time } 
 		})
+
+		return result
+
+	def _human_time(self, value):
+		remaining = value
+		label = ["second", "minute", "hour", "day", "year"]
+		mult = [60, 60, 24, 365, 100000]
+		result = " "
+
+		for i in range(len(label)):
+			if remaining == 0:
+				break
+
+			value = remaining % mult[i]
+
+			if not value == 0:
+				if value == 1:
+					result = " %d %s" % (value, label[i]) + result
+				else:
+					result = " %d %s" % (value, label[i] + "s") + result
+
+			remaining = (remaining - value) / mult[i]
 
 		return result
 
