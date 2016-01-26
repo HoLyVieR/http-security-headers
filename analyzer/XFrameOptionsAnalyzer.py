@@ -9,7 +9,7 @@ class XFrameOptionsAnalyzer:
 		if results["status"] == "X_FRAME_OPTIONS_NONE":
 			parts.append({
 				"type" : "warning",
-				"message" : "X-Content-Type is not specified. This page is susceptible to clickjacking attack."
+				"message" : "X-Frame-Options is not specified. This page is susceptible to clickjacking attack."
 			})
 
 		return "X-Frame-Options Header", parts
