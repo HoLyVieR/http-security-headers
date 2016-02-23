@@ -2,6 +2,7 @@
 import argparse
 import urlparse
 import httplib
+import ssl
 
 # Internal
 import parser.XFrameOptionsParser
@@ -53,9 +54,9 @@ def get_connection(url):
 
 	return connection, request_path
 
-def get_http_response(url):
+def get_http_response(url, cookie):
 	connection, request_path = get_connection(url)
-	connection.request("GET", request_path, "", { "User-Agent" : USER_AGENT })
+	connection.request("GET", request_path, "", { "User-Agent" : USER_AGENT, "Cookie" : cookie })
 	response = connection.getresponse()
 	headers = response.getheaders()
 	content = response.read()
@@ -107,7 +108,13 @@ if __name__ == "__main__":
 	arg_parser.add_argument("--output_type", help="The format for which you want the report to be. Possible value are : html.", default="html")
 	arg_parser.add_argument("--output_file", help="File to output the report. When this option is not specified, stdout is used.")
 	arg_parser.add_argument("--include_empty_section", help="If the empty section of the report should be included.", default=False, action='store_const', const=True)
+	arg_parser.add_argument("--cookie_file", help="Use the content of the specified file to fill the Cookie header.", default=None)
+	arg_parser.add_argument("--ignore_ssl_error", help="Ignore SSL certificate error. You will need this options for website using self-signed certificate.", default=False, action='store_const', const=True)
 	args = arg_parser.parse_args()
+
+	if args.ignore_ssl_error:
+		if hasattr(ssl, '_create_unverified_context'):
+			ssl._create_default_https_context = ssl._create_unverified_context
 
 	if args.output_type and args.output_type.lower() == "html":
 		output_inst = output.HTMLOutput.HTMLOutput()
@@ -115,7 +122,11 @@ if __name__ == "__main__":
 		print("Unsupported output type '%s'." % args.output_type)
 		exit()
 
-	headers, content = get_http_response(args.url)
+	cookie = ""
+	if not args.cookie_file is None:
+		cookie = open(args.cookie_file, "rb").read()
+
+	headers, content = get_http_response(args.url, cookie)
 	report, parse_results = get_analysis(headers, content)
 	output = output_inst.output(args.url, headers, content, report, parse_results)
 
